@@ -18,7 +18,7 @@
 5. Run api endpoints in api client and run server:- <br />
     php artisan serve
 
-6. First register and login the user the auth token get genarated  <br />
+6. First register and login the user then auth token will get generate  <br />
     end points for registration and login <br />
     1. api/register <br />
        Parameters:-  <br />
@@ -26,14 +26,14 @@
         email: text email <br />
         password: text or number <br />
         password_confirmation: sam as password <br />
-    Then auth token got genarated use for run department and employee api <br /> 
+    Then auth token got genarated use to run department and employee api <br /> 
     <br />
 
    2. api/login <br />
        Parameters:-  <br />
         email: text email <br />
         password: text or number <br />
-   Then auth token got genarated use for run department and employee api <br /> 
+   Then auth token got genarated use to run department and employee api <br /> 
 
 6. Below are the end points for department and employee  <br />
     First Create departments:-  <br />
@@ -116,4 +116,3 @@
        name: text <br />
       <br />  
 
-  
