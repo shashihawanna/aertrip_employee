@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Contact;
+use App\Models\Addresses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EmployeeResource;
 use Exception;
@@ -47,7 +49,11 @@ class EmployeeController extends Controller
                 'dep_id' => 'required',
                 'age' => 'required|max:50',
                 'job' => 'required|max:50',
-                'salary' => 'required|max:50'
+                'salary' => 'required|max:50',
+                'contacts' => 'required',
+                'addresses' => 'required',
+                'contacts.*' => 'required',
+                'addresses.*' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -56,9 +62,12 @@ class EmployeeController extends Controller
                     'Validation Error'
                 ]);
             }
-
+           
             $employee = Employee::create($data);
-
+            $contact = new Contact();
+            $contact->store($request->contacts,$employee->id);
+            $address = new Addresses();
+            $address->store($request->addresses,$employee->id);
             return response([
                 'employee' => new
                     EmployeeResource($employee),

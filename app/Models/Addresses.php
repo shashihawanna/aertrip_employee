@@ -13,4 +13,14 @@ class Addresses extends Model
     protected $fillable = [
         'emp_id',  'address', 'deleted_at'
     ];
+
+    public function store($addresses,$emp_id)
+    {
+        foreach ($addresses as $address) {
+            $obj = new Self(); 
+            $obj->emp_id = $emp_id;
+            $obj->address = $address;
+            $obj->save();
+        }
+    }
 }

@@ -27,6 +27,7 @@ class UserAuthController extends Controller
 
             return response(['user' => $user, 'token' => $token]);
         } catch (Exception $e) {
+            dd($e);
             Log::error($e);
         }
     }

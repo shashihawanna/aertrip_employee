@@ -13,4 +13,20 @@ class Employee extends Model
     protected $fillable = [
         'dep_id', 'name', 'age', 'job', 'salary', 'deleted_at'
     ];
+
+     /**
+     * Get the contact for the each employee.
+     */
+    public function contact()
+    {
+        return $this->hasMany(Contact::class, 'emp_id');
+    }
+
+    /**
+     * Get the address for the each employee.
+     */
+    public function address()
+    {
+        return $this->hasMany(Addresses::class,'emp_id');
+    }
 }

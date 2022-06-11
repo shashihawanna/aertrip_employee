@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +21,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', 'Auth\UserAuthController@register');
-Route::post('/login', 'Auth\UserAuthController@login');
-Route::apiResource('/employee', 'EmployeeController')->middleware('auth:api');
-Route::apiResource('/department', 'DepartmentController')->middleware('auth:api');
+Route::post('/register', [UserAuthController::class, 'register']);
+Route::post('/login',  [UserAuthController::class, 'login']);
+Route::apiResource('/employee', EmployeeController::class)->middleware('auth:api');
+Route::apiResource('/department', DepartmentController::class)->middleware('auth:api');
+
+Route::any('{segment}', function () {
+    return response()->json([
+        'error' => 'Invalid url.'
+    ]);
+})->where('segment', '.*');
+
+Route::get('unauthorized', function () {
+    return response()->json([
+        'error' => 'Unauthorized.'
+    ], 401);
+})->name('unauthorized');
