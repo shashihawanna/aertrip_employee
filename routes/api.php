@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/register', 'Auth\UserAuthController@register');
+Route::post('/login', 'Auth\UserAuthController@login');
+Route::apiResource('/employee', 'EmployeeController')->middleware('auth:api');
+Route::apiResource('/department', 'DepartmentController')->middleware('auth:api');

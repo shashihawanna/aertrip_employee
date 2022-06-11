@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Http\Resources\DepartmentsResource;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
@@ -14,9 +18,17 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $departments = Department::all();
+            return response([
+                'departments' =>
+                DepartmentsResource::collection($departments),
+                'message' => 'Successful'
+            ], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -25,7 +37,30 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $validator = Validator::make($data, [
+                'dep_name' => 'required|max:50',
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'error' => $validator->errors(),
+                    'Validation Error'
+                ]);
+            }
+
+            $department = Department::create($data);
+
+            return response([
+                'department' => new
+                    DepartmentsResource($department),
+                'message' => 'Success'
+            ], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 
     /**
@@ -36,7 +71,12 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        //
+        try {
+            return response(['department' => new
+                DepartmentsResource($department), 'message' => 'Success'], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 
     /**
@@ -48,7 +88,14 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+        try {
+            $department->update($request->all());
+
+            return response(['department' => new
+                DepartmentsResource($department), 'message' => 'Success'], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 
     /**
@@ -59,6 +106,11 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        try {
+            $department->delete();
+            return response(['message' => 'Department deleted']);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 }
