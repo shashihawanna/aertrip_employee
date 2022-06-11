@@ -131,6 +131,14 @@ class EmployeeController extends Controller
         }
     }
 
+     /**
+     * Validation for emplyee creation and updation.
+     *
+     * @param \App\Employee $request paramaters
+     * @return \Illuminate\Http\Validator 
+     * @throws \Exception
+     */
+    
     public function empValidation($data)
     {
         $validator = Validator::make($data, [
@@ -145,5 +153,27 @@ class EmployeeController extends Controller
             'addresses.*' => 'required'
         ]);
         return $validator;
+    }
+
+     /**
+     * Validation for emplyee creation and updation.
+     *
+     * @param \App\Employee $request paramaters
+     * @return \Illuminate\Http\Response 
+     * @throws \Exception
+     */
+    public function searchEmployee(Request $request)
+    {
+        try {
+            $search = $request->search;
+            $employees = Employee::where('name','like','%'.$search.'%')->orderBy('id')->get();    
+            return response([
+                'employees' =>
+                EmployeeResource::collection($employees),
+                'message' => 'Successful'
+            ], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 }

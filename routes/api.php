@@ -25,6 +25,7 @@ Route::post('/register', [UserAuthController::class, 'register']);
 Route::post('/login',  [UserAuthController::class, 'login']);
 Route::apiResource('/employee', EmployeeController::class)->middleware('auth:api');
 Route::apiResource('/department', DepartmentController::class)->middleware('auth:api');
+Route::get('/search-employee', [EmployeeController::class, 'searchEmployee'])->middleware('auth:api');
 
 Route::any('{segment}', function () {
     return response()->json([
