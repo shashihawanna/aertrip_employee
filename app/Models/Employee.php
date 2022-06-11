@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'dep_id', 'name', 'age', 'job', 'salary', 'deleted_at'
     ];
 
-     /**
+    /**
      * Get the contact for the each employee.
      */
     public function contact()
@@ -27,6 +27,14 @@ class Employee extends Model
      */
     public function address()
     {
-        return $this->hasMany(Addresses::class,'emp_id');
+        return $this->hasMany(Addresses::class, 'emp_id');
+    }
+
+    /**
+     * Get the employee department.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dep_id');
     }
 }

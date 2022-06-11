@@ -14,13 +14,22 @@ class Contact extends Model
         'emp_id',  'number', 'deleted_at'
     ];
 
-    public function store($contacts,$emp_id)
+    public function store($contacts, $emp_id)
     {
-        foreach ($contacts as $contact) {
-            $obj = new Self(); 
-            $obj->emp_id = $emp_id;
-            $obj->number = $contact;
-            $obj->save();
+        if (is_array($contacts)) {
+            foreach ($contacts as $contact) {
+                $obj = new Self();
+                $obj->emp_id = $emp_id;
+                $obj->number = $contact;
+                $obj->save();
+            }
+            return true;
         }
+
+        $obj = new Self();
+        $obj->emp_id = $emp_id;
+        $obj->number = $contacts;
+        $obj->save();
+        return true;
     }
 }

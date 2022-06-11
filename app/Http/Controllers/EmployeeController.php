@@ -42,32 +42,19 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
 
-            $validator = Validator::make($data, [
-                'name' => 'required|max:50',
-                'dep_id' => 'required',
-                'age' => 'required|max:50',
-                'job' => 'required|max:50',
-                'salary' => 'required|max:50',
-                'contacts' => 'required',
-                'addresses' => 'required',
-                'contacts.*' => 'required',
-                'addresses.*' => 'required'
-            ]);
-
+            $validator = $this->empValidation($request->all());
             if ($validator->fails()) {
                 return response([
                     'error' => $validator->errors(),
                     'Validation Error'
                 ]);
             }
-           
-            $employee = Employee::create($data);
+            $employee = Employee::create($request->all());
             $contact = new Contact();
-            $contact->store($request->contacts,$employee->id);
+            $contact->store($request->contacts, $employee->id);
             $address = new Addresses();
-            $address->store($request->addresses,$employee->id);
+            $address->store($request->addresses, $employee->id);
             return response([
                 'employee' => new
                     EmployeeResource($employee),
@@ -104,8 +91,20 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         try {
+            $validator = $this->empValidation($request->all());
+            if ($validator->fails()) {
+                return response([
+                    'error' => $validator->errors(),
+                    'Validation Error'
+                ]);
+            }
             $employee->update($request->all());
-
+            $employee->contact($employee->id)->delete();
+            $employee->address($employee->id)->delete();
+            $contact = new Contact();
+            $contact->store($request->contacts, $employee->id);
+            $address = new Addresses();
+            $address->store($request->addresses, $employee->id);
             return response(['employee' => new
                 EmployeeResource($employee), 'message' => 'Success'], 200);
         } catch (Exception $e) {
@@ -124,9 +123,27 @@ class EmployeeController extends Controller
     {
         try {
             $employee->delete();
+            $employee->contact($employee->id)->delete();
+            $employee->address($employee->id)->delete();
             return response(['message' => 'Employee deleted']);
         } catch (Exception $e) {
             Log::error($e);
         }
+    }
+
+    public function empValidation($data)
+    {
+        $validator = Validator::make($data, [
+            'name' => 'required|max:50',
+            'dep_id' => 'required',
+            'age' => 'required|max:50',
+            'job' => 'required|max:50',
+            'salary' => 'required|max:50',
+            'contacts' => 'required',
+            'addresses' => 'required',
+            'contacts.*' => 'required',
+            'addresses.*' => 'required'
+        ]);
+        return $validator;
     }
 }

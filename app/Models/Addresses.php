@@ -8,19 +8,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Addresses extends Model
 {
-    use HasFactory,SoftDeletes;
- 
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'emp_id',  'address', 'deleted_at'
     ];
 
-    public function store($addresses,$emp_id)
+    public function store($addresses, $emp_id)
     {
-        foreach ($addresses as $address) {
-            $obj = new Self(); 
-            $obj->emp_id = $emp_id;
-            $obj->address = $address;
-            $obj->save();
+        if (is_array($addresses)) {
+            foreach ($addresses as $address) {
+                $obj = new Self();
+                $obj->emp_id = $emp_id;
+                $obj->address = $address;
+                $obj->save();
+            }
+            return true;
         }
+
+        $obj = new Self();
+        $obj->emp_id = $emp_id;
+        $obj->address = $addresses;
+        $obj->save();
+        return true;
     }
 }
