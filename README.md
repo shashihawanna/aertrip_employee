@@ -9,7 +9,7 @@
 
 2. Add database details in .env file create .env from .env.example  
 
-3. Run migration to create database:- <br />
+3. Run migration to create database tables:- <br />
     php artisan migrate
 
 4. Run Passport install for personal access client:- <br />
